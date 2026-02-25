@@ -14,4 +14,4 @@ It illustrates:
 ---
 
 ## Diagram
-![alt text](image-3.png)
+![alt text](md.images/image-3.png)

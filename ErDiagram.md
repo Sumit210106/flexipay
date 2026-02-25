@@ -1,2 +1,2 @@
 # ER Diagram 
-![FlexiPay ER Diagram](image-4.png)
+![FlexiPay ER Diagram](md.images/image-4.png)

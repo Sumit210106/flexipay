@@ -7,4 +7,4 @@ This sequence diagram represents the complete flow of a subscriber purchasing a 
 
 ## Main Flow: Subscribe to Plan
 
-![alt text](image-1.png)
+![alt text](md.images/image-1.png)
