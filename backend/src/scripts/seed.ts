@@ -12,6 +12,12 @@ import { InvoiceStatus } from "../enums/invoiceStatus";
 const seed = async () => {
   await connectDB();
 
+  await Organization.deleteMany({});
+  await UserModel.deleteMany({});
+  await PlanModel.deleteMany({});
+  await SubscriptionModel.deleteMany({});
+  await InvoiceModel.deleteMany({});
+
   const org = await Organization.create({ name: "Test Org" });
 
   const user = await UserModel.create({

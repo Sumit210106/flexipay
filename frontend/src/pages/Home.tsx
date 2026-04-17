@@ -12,8 +12,8 @@ export const Home: React.FC = () => {
   const { loginAsAdmin, loginAsSubscriber } = useAuth();
   const navigate = useNavigate();
   
-  const [orgId, setOrgId] = useState('60d5ecb8b392cb364c4c23c1');
-  const [userId, setUserId] = useState('60d5ecb8b392cb364c4c23c2');
+  const [orgId, setOrgId] = useState('69e283d6cf78073496f1e54f');
+  const [userId, setUserId] = useState('69e283d6cf78073496f1e551');
 
   const handleAdminLogin = () => {
     if (!orgId) return alert('Enter Org ID');
