@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { requestLogger } from "./middlewares/requestLogger";
 import { errorHandler } from "./middlewares/errorHandler";
 import planRouter from "./routes/plan.routes";
@@ -9,6 +10,7 @@ import webhookRouter from "./routes/webhook.routes";
 export const app = express();
 
 // ── Core middleware ───────────────────────────────────────────────────────────
+app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use(requestLogger);
 
