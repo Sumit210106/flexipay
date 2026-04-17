@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Building, User, ArrowRight, Activity } from 'lucide-react';
-
-// Hardcoded seed IDs - must match your backend seed!
-const DEFAULT_ORG_ID = '60d5ecb8b392cb364c4c23c1'; // Example string, wait, backend seed generates dynamically.
-// We should allow the user to input the ID or we can fetch the first org!
-// For simplicity, let's just make the user paste their Organization ID.
+import { Layers, Zap, ArrowRight, Activity, Code2, Database } from 'lucide-react';
 
 export const Home: React.FC = () => {
   const { loginAsAdmin, loginAsSubscriber } = useAuth();
@@ -16,110 +11,117 @@ export const Home: React.FC = () => {
   const [userId, setUserId] = useState('69e283d6cf78073496f1e551');
 
   const handleAdminLogin = () => {
-    if (!orgId) return alert('Enter Org ID');
+    if (!orgId) return;
     loginAsAdmin(orgId);
     navigate('/admin');
   };
 
   const handleSubscriberLogin = () => {
-    if (!orgId || !userId) return alert('Enter Org and User ID');
+    if (!orgId || !userId) return;
     loginAsSubscriber(userId, orgId);
     navigate('/pricing');
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-12 py-12">
-      <div className="text-center space-y-4">
-        <div className="inline-flex items-center justify-center p-3 bg-purple-500/10 rounded-full mb-4 ring-1 ring-purple-500/20">
-          <Activity className="w-8 h-8 text-purple-400" />
+    <div className="max-w-4xl mx-auto flex flex-col items-center justify-center min-h-[80vh] py-12">
+      
+      {/* Hero Section */}
+      <div className="text-center space-y-6 mb-16 relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-indigo-500/10 blur-[100px] -z-10 rounded-full" />
+        
+        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-300 text-xs font-semibold uppercase tracking-widest mx-auto mb-4">
+          <Activity className="w-3.5 h-3.5" />
+          <span>v1.0 Headless Engine</span>
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white">
-          Welcome to FlexiPay
+        
+        <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-white leading-tight">
+          Next-Gen <span className="premium-gradient">Billing API</span>
         </h1>
         <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-          The headless, multi-tenant subscription engine. 
-          Select a role below to explore the reference implementation.
+          The underlying multi-tenant subscription engine providing state-machine powered lifecycle management and transactional idempotency.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6 pt-8">
+      <div className="grid md:grid-cols-2 gap-6 w-full max-w-3xl">
         {/* Admin Card */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 hover:border-purple-500/50 transition duration-300 relative group overflow-hidden">
-          <div className="absolute top-0 right-0 p-32 bg-purple-500/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-purple-500/10 transition"></div>
+        <div className="glass-card rounded-2xl p-8 group relative overflow-hidden transition-all duration-500 hover:border-indigo-500/30 hover:shadow-[0_0_30px_-5px_rgba(99,102,241,0.15)] flex flex-col">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-[40px] -mr-10 -mt-10 transition-transform duration-700 group-hover:scale-150" />
           
-          <Building className="w-10 h-10 text-purple-400 mb-6" />
-          <h2 className="text-2xl font-semibold text-white mb-2">Tenant Admin</h2>
-          <p className="text-gray-400 text-sm mb-6 h-10">
-            Create pricing plans and view all subscriptions for your organization.
+          <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-Inner">
+            <Layers className="w-6 h-6 text-indigo-400" />
+          </div>
+          
+          <h2 className="text-xl font-semibold text-white mb-2">Tenant Provider</h2>
+          <p className="text-sm text-gray-400 mb-8 flex-grow leading-relaxed">
+            Act as an organization admin to define tiered pricing models and monitor incoming webhook activity.
           </p>
           
-          <div className="space-y-4 relative z-10">
-            <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Organization ID</label>
+          <div className="space-y-4">
+            <div className="relative">
+              <Code2 className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
               <input 
                 type="text" 
                 value={orgId}
                 onChange={(e) => setOrgId(e.target.value)}
-                className="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-2.5 text-sm text-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
-                placeholder="MongoDB ObjectId"
+                className="w-full bg-[#121214] border border-white/10 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-300 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500/50 outline-none transition"
+                placeholder="Organization ID"
               />
             </div>
             <button 
               onClick={handleAdminLogin}
-              className="w-full bg-white text-gray-950 hover:bg-gray-200 font-medium py-2.5 px-4 rounded-lg flex items-center justify-center space-x-2 transition"
+              className="w-full bg-white text-black hover:bg-gray-200 font-semibold py-2.5 px-4 rounded-lg flex items-center justify-center space-x-2 transition shadow-[0_4px_12px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_16px_rgba(255,255,255,0.2)]"
             >
-              <span>Login as Admin</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Initialize Admin Context</span>
+              <ArrowRight className="w-4 h-4 ml-1 opacity-70 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         </div>
 
         {/* Subscriber Card */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 hover:border-blue-500/50 transition duration-300 relative group overflow-hidden">
-          <div className="absolute top-0 right-0 p-32 bg-blue-500/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-blue-500/10 transition"></div>
+        <div className="glass-card rounded-2xl p-8 group relative overflow-hidden transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_0_30px_-5px_rgba(168,85,247,0.15)] flex flex-col">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-[40px] -mr-10 -mt-10 transition-transform duration-700 group-hover:scale-150" />
           
-          <User className="w-10 h-10 text-blue-400 mb-6" />
-          <h2 className="text-2xl font-semibold text-white mb-2">Subscriber</h2>
-          <p className="text-gray-400 text-sm mb-6 h-10">
-            View plans, subscribe, upgrade mid-cycle, and manage billing.
+          <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-Inner">
+            <Zap className="w-6 h-6 text-purple-400" />
+          </div>
+          
+          <h2 className="text-xl font-semibold text-white mb-2">Subscriber Client</h2>
+          <p className="text-sm text-gray-400 mb-8 flex-grow leading-relaxed">
+            Act as an end-user to execute idempotent checkouts, process upgrades with automated proration, and manage renewals.
           </p>
           
-          <div className="space-y-4 relative z-10">
+          <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Org ID</label>
+               <div className="relative">
+                <Database className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input 
                   type="text" 
                   value={orgId}
                   onChange={(e) => setOrgId(e.target.value)}
-                  className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2.5 text-sm text-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                  placeholder="ID"
+                  className="w-full bg-[#121214] border border-white/10 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-300 focus:ring-1 focus:ring-purple-500 focus:border-purple-500/50 outline-none transition"
+                  placeholder="Org ID"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">User ID</label>
+              <div className="relative">
+                <Code2 className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input 
                   type="text" 
                   value={userId}
                   onChange={(e) => setUserId(e.target.value)}
-                  className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2.5 text-sm text-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                  placeholder="ID"
+                  className="w-full bg-[#121214] border border-white/10 rounded-lg pl-9 pr-3 py-2.5 text-sm text-gray-300 focus:ring-1 focus:ring-purple-500 focus:border-purple-500/50 outline-none transition"
+                  placeholder="User ID"
                 />
               </div>
             </div>
             <button 
               onClick={handleSubscriberLogin}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center space-x-2 transition"
+              className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 px-4 rounded-lg flex items-center justify-center space-x-2 transition shadow-lg shadow-indigo-600/20 hover:shadow-indigo-500/30"
             >
-              <span>Login as Subscriber</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Initialize User Context</span>
+              <ArrowRight className="w-4 h-4 ml-1 opacity-70 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         </div>
-      </div>
-      
-      <div className="mt-8 p-4 bg-gray-900 border border-gray-800 rounded-lg text-sm text-gray-400 text-center">
-        💡 <strong>Pro Tip:</strong> Run <code className="bg-gray-950 px-1.5 py-0.5 rounded text-purple-400 border border-gray-800">npm run seed</code> in the backend, then paste the generated ObjectIds here to test without creating from scratch.
       </div>
     </div>
   );

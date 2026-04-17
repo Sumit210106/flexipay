@@ -19,7 +19,6 @@ export const Pricing: React.FC = () => {
   const [subscribingTo, setSubscribingTo] = useState<string | null>(null);
 
   useEffect(() => {
-    // Only a subscriber can access this
     if (user && user.role === 'subscriber') {
       fetchPlans();
     }
@@ -39,9 +38,7 @@ export const Pricing: React.FC = () => {
   const handleSubscribe = async (planId: string) => {
     setSubscribingTo(planId);
     try {
-      // Must generate an idempotency key for safe retries
       const idempotencyKey = crypto.randomUUID();
-      
       await apiClient.post('/subscriptions', {
         userId: user!.id,
         planId: planId
@@ -50,8 +47,6 @@ export const Pricing: React.FC = () => {
           'Idempotency-Key': idempotencyKey
         }
       });
-      
-      // Navigate to dashboard on success
       navigate('/subscriber');
     } catch (err: any) {
       alert(err.response?.data?.error?.message || 'Failed to subscribe');
@@ -61,78 +56,81 @@ export const Pricing: React.FC = () => {
   };
 
   if (!user || user.role !== 'subscriber') {
-    return <div className="text-center text-gray-400 mt-20">Access Denied. Subscriber only.</div>;
+    return <div className="text-center text-gray-400 mt-20">Access Denied. Subscriber context required.</div>;
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-12">
-      <div className="text-center space-y-4 pt-8">
-        <h1 className="text-4xl font-bold text-white tracking-tight">Simple, transparent pricing</h1>
-        <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-          Choose the plan that fits your needs. 
-          Proration is automatically calculated if you upgrade mid-cycle.
+    <div className="max-w-6xl mx-auto space-y-16">
+      <div className="text-center space-y-5 pt-12 relative">
+        <h1 className="text-5xl font-bold text-white tracking-tight">Flexible tiers for <span className="premium-gradient">seamless scaling</span></h1>
+        <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          Upgrade or downgrade at any time. Proration logic securely handles mid-cycle credit allocation automatically.
         </p>
       </div>
 
       {loading ? (
-        <div className="flex justify-center p-12 text-gray-500">Loading pricing models...</div>
+        <div className="flex justify-center p-12 text-gray-500 animate-pulse font-medium">Synchronizing plans...</div>
       ) : plans.length === 0 ? (
-        <div className="text-center text-gray-500">Your organization has not set up any plans yet.</div>
+        <div className="text-center p-12 glass-card rounded-2xl max-w-2xl mx-auto border-dashed">
+          <p className="text-gray-400">No active plans detected for this organization context.</p>
+        </div>
       ) : (
-        <div className="grid md:grid-cols-3 gap-8 justify-center">
+        <div className="grid md:grid-cols-3 gap-6 justify-center max-w-5xl mx-auto items-end">
           {plans.map((plan, i) => {
-            const isPopular = i === 1 || plans.length === 1; // Highlight middle plan or single plan
+            const isPopular = plans.length > 1 ? i === 1 : true;
             
             return (
               <div 
                 key={plan._id} 
-                className={`relative bg-gray-900 rounded-2xl p-8 flex flex-col ${
-                  isPopular ? 'border-2 border-blue-500 shadow-[0_0_40px_-15px_rgba(59,130,246,0.3)]' : 'border border-gray-800'
+                className={`relative glass-card rounded-3xl p-8 flex flex-col transition-all duration-300 ${
+                  isPopular 
+                    ? 'border-indigo-500/50 shadow-[0_4px_40px_-15px_rgba(99,102,241,0.25)] md:-mt-6 bg-[#0f0f11]' 
+                    : 'hover:border-white/20'
                 }`}
               >
                 {isPopular && (
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center space-x-1 tracking-wide">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[10px] uppercase tracking-widest font-bold px-4 py-1.5 rounded-full flex items-center space-x-1.5 shadow-lg shadow-indigo-500/20">
                     <Sparkles className="w-3 h-3" />
-                    <span>POPULAR</span>
+                    <span>Recommended</span>
                   </div>
                 )}
                 
-                <h3 className="text-xl font-semibold text-white mb-2">{plan.name}</h3>
-                <div className="flex items-baseline space-x-1 mb-6">
-                  <span className="text-4xl font-bold text-white">₹{plan.price}</span>
-                  <span className="text-gray-500">/{plan.interval}</span>
+                <h3 className="text-xl font-medium text-gray-200 mb-4">{plan.name}</h3>
+                <div className="flex items-baseline space-x-1 mb-8">
+                  <span className="text-4xl font-bold tracking-tight text-white">₹{plan.price}</span>
+                  <span className="text-gray-500 text-sm font-medium">/{plan.interval}</span>
                 </div>
                 
-                <div className="space-y-4 mb-8 flex-grow text-sm text-gray-400">
+                <div className="space-y-4 mb-10 flex-grow text-sm text-gray-300">
                   <div className="flex items-start space-x-3">
-                    <Check className="w-5 h-5 text-blue-400 shrink-0" />
-                    <span>Mock payment processing included</span>
+                    <Check className="w-4 h-4 text-indigo-400 mt-0.5 shrink-0" />
+                    <span className="leading-relaxed">Mock payment gateway integration</span>
                   </div>
                   <div className="flex items-start space-x-3">
-                    <Check className="w-5 h-5 text-blue-400 shrink-0" />
-                    <span>ACID transactional integrity</span>
+                    <Check className="w-4 h-4 text-indigo-400 mt-0.5 shrink-0" />
+                    <span className="leading-relaxed">MongoDB ACID transaction safety</span>
                   </div>
                   <div className="flex items-start space-x-3">
-                    <Check className="w-5 h-5 text-blue-400 shrink-0" />
-                    <span>Seamless upgrades/downgrades</span>
+                    <Check className="w-4 h-4 text-indigo-400 mt-0.5 shrink-0" />
+                    <span className="leading-relaxed">Automated invoice generation</span>
                   </div>
                 </div>
                 
                 <button
                   onClick={() => handleSubscribe(plan._id)}
                   disabled={subscribingTo !== null}
-                  className={`w-full py-3 px-6 rounded-xl font-medium transition flex items-center justify-center space-x-2 ${
+                  className={`w-full py-3.5 px-6 rounded-xl font-medium transition-all duration-300 flex items-center justify-center space-x-2 ${
                     isPopular 
-                      ? 'bg-blue-600 hover:bg-blue-500 text-white' 
-                      : 'bg-gray-800 hover:bg-gray-700 text-white'
-                  } disabled:opacity-50`}
+                      ? 'bg-indigo-500 hover:bg-indigo-400 text-white shadow hover:shadow-indigo-500/25' 
+                      : 'bg-white/5 hover:bg-white/10 text-white border border-white/5'
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {subscribingTo === plan._id ? (
-                    <span>Processing...</span>
+                    <span className="animate-pulse">Processing...</span>
                   ) : (
                     <>
                       <CreditCard className="w-4 h-4" />
-                      <span>Subscribe</span>
+                      <span>{isPopular ? 'Subscribe Now' : 'Select Plan'}</span>
                     </>
                   )}
                 </button>
