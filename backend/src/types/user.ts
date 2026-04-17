@@ -1,7 +1,0 @@
-export interface User {
-  id: string
-  email: string
-  organizationId: string
-  createdAt: Date
-  updatedAt: Date
-}
