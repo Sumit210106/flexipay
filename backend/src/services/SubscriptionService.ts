@@ -243,6 +243,10 @@ export class SubscriptionService {
     return sub;
   }
 
+  async getActiveSubscriptionByUserId(userId: string): Promise<SubscriptionDocument | null> {
+    return this.subscriptionRepo.findActiveByUserId(userId);
+  }
+
   private calcPeriodEnd(from: Date, interval: string): Date {
     const end = new Date(from);
     switch (interval) {

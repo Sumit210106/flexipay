@@ -23,6 +23,15 @@ export class SubscriptionController {
     }
   }
 
+  async getByUserId(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const subscription = await subscriptionService.getActiveSubscriptionByUserId(req.params.userId);
+      res.json({ success: true, data: subscription });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   async upgrade(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { newPlanId } = req.body;

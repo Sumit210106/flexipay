@@ -11,6 +11,9 @@ router.post("/", idempotencyMiddleware, subscriptionController.subscribe.bind(su
 // GET /api/subscriptions/:id - get subscription details
 router.get("/:id", subscriptionController.getById.bind(subscriptionController));
 
+// GET /api/subscriptions/user/:userId - get active subscription by user id
+router.get("/user/:userId", subscriptionController.getByUserId.bind(subscriptionController));
+
 // PATCH /api/subscriptions/:id/upgrade - upgrade or downgrade plan
 router.patch("/:id/upgrade", subscriptionController.upgrade.bind(subscriptionController));
 
