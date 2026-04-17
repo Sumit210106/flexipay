@@ -16,7 +16,7 @@ export class SubscriptionController {
 
   async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const subscription = await subscriptionService.getSubscription(req.params.id);
+      const subscription = await subscriptionService.getSubscription(req.params.id as string);
       res.json({ success: true, data: subscription });
     } catch (err) {
       next(err);
@@ -25,7 +25,7 @@ export class SubscriptionController {
 
   async getByUserId(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const subscription = await subscriptionService.getActiveSubscriptionByUserId(req.params.userId);
+      const subscription = await subscriptionService.getActiveSubscriptionByUserId(req.params.userId as string);
       res.json({ success: true, data: subscription });
     } catch (err) {
       next(err);
@@ -36,7 +36,7 @@ export class SubscriptionController {
     try {
       const { newPlanId } = req.body;
       const subscription = await subscriptionService.upgrade({
-        subscriptionId: req.params.id,
+        subscriptionId: req.params.id as string,
         newPlanId,
       });
       res.json({ success: true, data: subscription });
@@ -47,7 +47,7 @@ export class SubscriptionController {
 
   async cancel(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const subscription = await subscriptionService.cancel(req.params.id);
+      const subscription = await subscriptionService.cancel(req.params.id as string);
       res.json({ success: true, data: subscription });
     } catch (err) {
       next(err);
