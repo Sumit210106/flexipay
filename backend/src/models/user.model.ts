@@ -3,6 +3,7 @@ import mongoose , {Schema , Document , Model , Types} from "mongoose";
 export interface UserDocument extends Document {
     email : string ;
     organizationId : Types.ObjectId ;
+    stripeCustomerId? : string ;
     createdAt : Date ;
     updatedAt : Date ;
 }
@@ -11,6 +12,7 @@ const userSchema : Schema<UserDocument> = new Schema(
     {
         email : {type: String , required :true , lowercase : true , trim : true} ,
         organizationId : {type : Schema.Types.ObjectId , ref : "Organization" , required : true} ,
+        stripeCustomerId : {type : String} ,
     },
     {timestamps : true}
 )

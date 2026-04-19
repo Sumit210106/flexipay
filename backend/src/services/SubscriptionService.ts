@@ -41,8 +41,13 @@ export class SubscriptionService {
       throw new ConflictError("User already has an active subscription");
     }
 
-    // Process payment first
-    const customerId = await this.gateway.createCustomer({ email: user.email });
+    // Ensure user has a Stripe Customer ID
+    let customerId = user.stripeCustomerId;
+    if (!customerId) {
+      customerId = await this.gateway.createCustomer({ email: user.email });
+      await this.userRepo.update(params.userId, { stripeCustomerId: customerId });
+    }
+
     const charge = await this.gateway.charge({
       amount: plan.price,
       currency: plan.currency,
@@ -133,11 +138,15 @@ export class SubscriptionService {
     const amountDue = Math.max(0, newPlan.price - credit);
 
     if (amountDue > 0) {
-      const customerId = await this.gateway.createCustomer({ email: "" }); // real flow: store customerId on user
+      const user = await this.userRepo.findById(subscription.userId.toString());
+      if (!user || !user.stripeCustomerId) {
+        throw new PaymentError("Customer billing context missing for upgrade");
+      }
+
       const charge = await this.gateway.charge({
         amount: amountDue,
         currency: newPlan.currency,
-        customerId,
+        customerId: user.stripeCustomerId,
         description: `Upgrade to ${newPlan.name} (prorated)`,
       });
 
@@ -192,11 +201,15 @@ export class SubscriptionService {
     const billingContext = new BillingContext(new FlatRateBillingStrategy());
     const amount = billingContext.calculate({ amount: plan.price, currentPeriodStart: subscription.currentPeriodStart, currentPeriodEnd: subscription.currentPeriodEnd });
 
-    const customerId = await this.gateway.createCustomer({ email: "" });
+    const user = await this.userRepo.findById(subscription.userId.toString());
+    if (!user || !user.stripeCustomerId) {
+      throw new PaymentError("Customer billing context missing for renewal");
+    }
+
     const charge = await this.gateway.charge({
       amount,
       currency: plan.currency,
-      customerId,
+      customerId: user.stripeCustomerId,
       description: `Renewal for plan ${plan.name}`,
     });
 

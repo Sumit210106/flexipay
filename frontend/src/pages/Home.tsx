@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Layers, Zap, ArrowRight, Activity, Code2, Database } from 'lucide-react';
+import { apiClient } from '../api/client';
+import { Layers, Zap, ArrowRight, Activity, Code2, Database, Rocket, Loader2 } from 'lucide-react';
 
 export const Home: React.FC = () => {
   const { loginAsAdmin, loginAsSubscriber } = useAuth();
@@ -9,6 +10,7 @@ export const Home: React.FC = () => {
   
   const [orgId, setOrgId] = useState('69e283d6cf78073496f1e54f');
   const [userId, setUserId] = useState('69e283d6cf78073496f1e551');
+  const [bootstrapping, setBootstrapping] = useState(false);
 
   const handleAdminLogin = () => {
     if (!orgId) return;
@@ -20,6 +22,21 @@ export const Home: React.FC = () => {
     if (!orgId || !userId) return;
     loginAsSubscriber(userId, orgId);
     navigate('/pricing');
+  };
+
+  const handleBootstrap = async () => {
+    setBootstrapping(true);
+    try {
+      const res = await apiClient.post('/setup/bootstrap');
+      const { organizationId, adminUserId } = res.data.data;
+      setOrgId(organizationId);
+      setUserId(adminUserId);
+      alert('Production Environment Bootstrapped! You can now login.');
+    } catch (err: any) {
+      alert(err.response?.data?.error?.message || 'Bootstrap failed — make sure backend is running.');
+    } finally {
+      setBootstrapping(false);
+    }
   };
 
   return (
@@ -40,6 +57,26 @@ export const Home: React.FC = () => {
         <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
           The underlying multi-tenant subscription engine providing state-machine powered lifecycle management and transactional idempotency.
         </p>
+
+        {/* Bootstrap Action */}
+        <div className="pt-8 flex flex-col items-center space-y-4">
+          <button 
+            onClick={handleBootstrap}
+            disabled={bootstrapping}
+            className="group relative flex items-center space-x-3 px-8 py-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl hover:bg-emerald-500/20 transition-all duration-300 disabled:opacity-50"
+          >
+            {bootstrapping ? (
+              <Loader2 className="w-5 h-5 text-emerald-400 animate-spin" />
+            ) : (
+              <Rocket className="w-5 h-5 text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            )}
+            <div className="text-left">
+              <div className="text-sm font-bold text-white uppercase tracking-wider">Bootstrap Environment</div>
+              <div className="text-xs text-gray-400">Initialize default Organization & Plans</div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity ml-4" />
+          </button>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6 w-full max-w-3xl">

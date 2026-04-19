@@ -17,6 +17,7 @@ export const config = Object.freeze({
   mongoUri: requireEnv("MONGO_URI"),
 
   paymentGateway: optionalEnv("PAYMENT_GATEWAY", "mock") as "mock" | "stripe",
+  clientUrl: optionalEnv("CLIENT_URL", "http://localhost:5173"),
 
   stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? "",
  
