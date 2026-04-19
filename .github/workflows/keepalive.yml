@@ -1,0 +1,14 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    # Runs every 12 minutes to prevent Render free tier from going to sleep
+    - cron: "*/12 * * * *"
+  workflow_dispatch: # Allows manual trigger from GitHub Actions UI
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render Health Check
+        run: curl -s https://flexipay-dygk.onrender.com/health || echo "Ping failed"

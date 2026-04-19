@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { MongoPlanRepository } from "../repositories/mongo/MongoPlanRepository";
 import { PlanDocument } from "../models/plan.model";
 import { NotFoundError, ConflictError } from "../errors/AppError";
@@ -25,12 +26,17 @@ export class PlanService {
   }
 
   async createPlan(input: CreatePlanInput): Promise<PlanDocument> {
-    const existing = await this.planRepo.findByNameAndOrg(input.name, input.organizationId);
+    const { organizationId, ...rest } = input;
+    const existing = await this.planRepo.findByNameAndOrg(input.name, organizationId);
     if (existing) {
       throw new ConflictError(`Plan "${input.name}" already exists for this organization`);
     }
 
-    return this.planRepo.create(input);
+    // Cast organizationId to any/Types.ObjectId to satisfy repository requirement
+    return this.planRepo.create({
+      ...rest,
+      organizationId: new Types.ObjectId(organizationId) as any
+    });
   }
 
   async getPlanById(id: string): Promise<PlanDocument> {
