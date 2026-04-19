@@ -18,7 +18,7 @@ export class PlanController {
 
   async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const plan = await planService.getPlanById(req.params.id);
+      const plan = await planService.getPlanById(req.params.id as string);
       res.json({ success: true, data: plan });
     } catch (err) {
       next(err);
@@ -36,7 +36,7 @@ export class PlanController {
 
   async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const plan = await planService.updatePlan(req.params.id, req.body);
+      const plan = await planService.updatePlan(req.params.id as string, req.body);
       res.json({ success: true, data: plan });
     } catch (err) {
       next(err);
@@ -45,7 +45,7 @@ export class PlanController {
 
   async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      await planService.deletePlan(req.params.id);
+      await planService.deletePlan(req.params.id as string);
       res.json({ success: true, message: "Plan deleted" });
     } catch (err) {
       next(err);

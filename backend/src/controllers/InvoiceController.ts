@@ -6,7 +6,7 @@ const invoiceService = new InvoiceService();
 export class InvoiceController {
   async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const invoice = await invoiceService.getInvoiceById(req.params.id);
+      const invoice = await invoiceService.getInvoiceById(req.params.id as string);
       res.json({ success: true, data: invoice });
     } catch (err) {
       next(err);
