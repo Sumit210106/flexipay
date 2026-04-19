@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { apiClient } from '../api/client';
-import { Plus, Package, CreditCard, LayoutTemplate } from 'lucide-react';
+import { Plus, Package, LayoutTemplate } from 'lucide-react';
 
 interface Plan {
   _id: string;

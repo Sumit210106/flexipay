@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, type ReactNode, useEffect } from 'react';
 import { setTenantId } from '../api/client';
 
 type Role = 'admin' | 'subscriber' | null;
