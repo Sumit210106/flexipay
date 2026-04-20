@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // FlexiPay backend defaults to 5000
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://flexipay-dygk.onrender.com/api';
 
 export const apiClient = axios.create({
   baseURL: API_URL,
