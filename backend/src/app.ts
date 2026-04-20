@@ -13,7 +13,7 @@ export const app = express();
 
 // ── Core middleware ───────────────────────────────────────────────────────────
 app.use(cors({
-  origin: config.clientUrl.split(",").map(url => url.trim()),
+  origin: config.clientUrl.split(",").map(url => url.trim().replace(/\/$/, "")),
   credentials: true
 }));
 app.use(express.json());
